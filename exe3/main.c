@@ -9,6 +9,14 @@
 #include "data.h"
 QueueHandle_t xQueueData;
 
+float calcular_media_movel(int *array, int tamanho) {
+    float soma = 0;
+    for (int i = 0; i < tamanho; i++) {
+        soma += array[i];
+    }
+    return soma / tamanho;
+}
+
 // não mexer! Alimenta a fila com os dados do sinal
 void data_task(void *p) {
     vTaskDelay(pdMS_TO_TICKS(400));
@@ -25,11 +33,24 @@ void data_task(void *p) {
 
 void process_task(void *p) {
     int data = 0;
+    int lista[5] = {0};
+    int i = 0;
+    float media = 0;
 
     while (true) {
         if (xQueueReceive(xQueueData, &data, 100)) {
             // implementar filtro aqui!
 
+            
+            lista[i] = data;
+            i = (i + 1) % 5;
+
+            if (i == 0){
+                float media = calcular_media_movel(lista, 5);
+            }
+
+
+            printf("%d\n", media);
 
 
 
